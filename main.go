@@ -1,29 +1,17 @@
 package main
 
 import (
+	"context"
 	"fmt"
-	"net/http"
 
-	"github.com/go-chi/chi"
-	"github.com/go-chi/chi/middleware"
+	"github.com/jmvdr-iscte/Orders/application"
 )
 
 func main() {
-	router := chi.NewRouter() // New em go é geralmente um construtor, é preferivel criar um construtor do que instanciar uma propriedde pois geralmente inicializam propriedades privadas desse tipo
-	router.Use(middleware.Logger)
+	app := application.New() // importa do meu package
 
-	router.Get("/hello", basicHandler)
-	server := &http.Server{ // storing as a pointer and accessing the memory address
-		Addr:    ":3001",
-		Handler: router,
-	}
-
-	err := server.ListenAndServe()
+	err := app.Start((context.TODO()))
 	if err != nil {
-		fmt.Println(" Failed to connect to server", err)
+		fmt.Println("failed to start app:", err)
 	}
-}
-
-func basicHandler(w http.ResponseWriter, r *http.Request) { // o * é um pointer
-	w.Write([]byte("Gosto muito de bananas"))
 }
