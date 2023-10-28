@@ -12,11 +12,15 @@ import (
 type App struct { // guarda as dependencias da aplicação
 	router http.Handler  // para ficar desassociado do chi
 	rdb    *redis.Client // guardar o client de redis
+	config Config
 }
 
-func New() *App {
+func New(config Config) *App {
 	app := &App{ // cria uma instancia da app e vaz assign à variavel
-		rdb: redis.NewClient(&redis.Options{}), // gere o client internament
+		rdb: redis.NewClient(&redis.Options{
+			Addr: config.RedisAddress,
+		}), // gere o client internament
+		config: config,
 	}
 
 	app.loadRoutes()
@@ -25,7 +29,7 @@ func New() *App {
 
 func (a *App) Start(ctx context.Context) error { // criar um receiver, é como se fosse o owner do metodo, recebe um pointer para a instancia da app
 	server := &http.Server{
-		Addr:    ":3000",
+		Addr:    fmt.Sprintf(":%d", a.config.ServerPort),
 		Handler: a.router,
 	}
 	err := a.rdb.Ping(ctx).Err() //:= realiza assign e inicialização
