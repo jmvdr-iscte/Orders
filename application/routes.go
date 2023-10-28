@@ -7,7 +7,6 @@ import (
 	"github.com/go-chi/chi/middleware"
 	"github.com/jmvdr-iscte/Orders/handler"
 	"github.com/jmvdr-iscte/Orders/repository/order"
-	
 )
 
 func (a *App) loadRoutes() { // a parte inicial significa que faz parte da struct de App para poderem aceder às propriedades da App
@@ -25,15 +24,15 @@ func (a *App) loadRoutes() { // a parte inicial significa que faz parte da struc
 }
 
 func (a *App) loadOrderRoutes(router chi.Router) { // como está a receber o sub router quaisquer routes que vamos fazer assign a esta função vão ter o perfixo /orders
-	orderHandler := &handler.Order{// fazemos desta variável um pointer ao guardarmos a referencia/memory address da instancia
+	orderHandler := &handler.Order{ // fazemos desta variável um pointer ao guardarmos a referencia/memory address da instancia
 		Repo: &order.RedisRepo{
 			Client: a.rdb,
 		},
-	} 
+	}
 
 	router.Post("/", orderHandler.Create)
 	router.Get("/", orderHandler.List)
 	router.Get("/{id}", orderHandler.GetById)
 	router.Put("/{id}", orderHandler.UpdateById)
-	router.Delete("/{id}", orderHandler.Delete)
+	router.Delete("/{id}", orderHandler.DeleteById)
 }

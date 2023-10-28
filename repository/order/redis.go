@@ -118,7 +118,7 @@ type FindResult struct {
 }
 
 func (r *RedisRepo) FindAll(ctx context.Context, page FindAllPage) (FindResult, error) { // como o set não está ordenadovamos receber os resultados ao calhas
-	res := r.Client.SScan(ctx, "order", page.Offset, "*", int64(page.Size)) // vai buscar tudo no set, de acordo com o page size
+	res := r.Client.SScan(ctx, "orders", page.Offset, "*", int64(page.Size)) // vai buscar tudo no set, de acordo com o page size
 
 	keys, cursor, err := res.Result()
 	if err != nil {
